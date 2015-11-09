@@ -73,17 +73,18 @@ def get_args():
         default=None,
         help="""The path to a directory to hold logs."""
     )
-    parser.add_argument(
-        "--no-remove-duplicates",
+    algorithm = parser.add_mutually_exclusive_group(required=True)
+    algorithm.add_argument(
+        "--bwa-mem",
         action="store_true",
         default=False,
-        help="""Do not remove duplicate reads.""",
+        help="""Use bwa-mem.""",
     )
-    parser.add_argument(
-        "--mem",
+    algorithm.add_argument(
+        "--bwa",
         action="store_true",
         default=False,
-        help="""Use bwa mem.""",
+        help="""Use standard bwa algorithm.""",
     )
     return parser.parse_args()
 
@@ -130,7 +131,7 @@ def main():
     log.info("Getting input filenames and creating output directories")
     reference, individuals = get_input_data(log, conf, args.output)
     flowcells = dict(conf.items("flowcell"))
-    if args.mem:
+    if args.bwa_mem:
         log.info("You are running BWA-MEM")
     for indiv in individuals:
         bam, bam_se = False, False
@@ -145,7 +146,7 @@ def main():
         fastq = get_input_files(dir, args.subfolder, log)
         if fastq.r1 and fastq.r2:
             # bwa align r1 and r2
-            if args.mem:
+            if args.bwa_mem:
                 bam = bwa.mem_pe_align(log, sample, sample_dir, reference, args.cores, fastq.r1, fastq.r2)
             else:
                 bam = bwa.pe_align(log, sample, sample_dir, reference, args.cores, fastq.r1, fastq.r2)
@@ -158,7 +159,7 @@ def main():
             ### !!! and they have been filtered prior to alignment (after demuxing)
         if fastq.singleton:
             # bwa align singleton reads
-            if args.mem:
+            if args.bwa_mem:
                 bam_se = bwa.mem_se_align(log, sample, sample_dir, reference, args.cores, fastq.singleton)
             else:
                 bam_se = bwa.se_align(log, sample, sample_dir, reference, args.cores, fastq.singleton)
