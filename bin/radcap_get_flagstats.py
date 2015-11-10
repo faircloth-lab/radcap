@@ -16,7 +16,7 @@ import argparse
 
 from radcap import samtools
 from radcap.log import setup_logging
-from radcap.helpers import FullPaths, is_dir
+from radcap.helpers import FullPaths, is_dir, get_all_bams
 
 
 import pdb
@@ -60,14 +60,7 @@ def main():
     args = get_args()
     # setup logging
     log, my_name = setup_logging(args)
-    all_bams = []
-    for root, dirs, files in os.walk(args.input_dir, followlinks=False):
-        bams = [f for f in files if ".bam" in f]
-        if bams != []:
-            for b in bams:
-                all_bams.append(os.path.join(root, b))
-        else:
-            pass
+    all_bams = get_all_bams(args.input_dir)
     # pretty print taxon status
     text = " samtools flagstat output"
     log.info(text.center(65, "-"))

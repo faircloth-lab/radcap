@@ -88,3 +88,14 @@ def which(program):
             if is_exe(exe_file):
                 return exe_file
     return None
+
+def get_all_bams(input_dir):
+    all_bams = []
+    for root, dirs, files in os.walk(input_dir, followlinks=False):
+        bams = [f for f in files if ".bam" in f]
+        if bams != []:
+            for b in bams:
+                all_bams.append(os.path.join(root, b))
+        else:
+            pass
+    return all_bams
