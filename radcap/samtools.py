@@ -41,7 +41,7 @@ def flagstats(log, bam):
         "hq_diff_chromo"
     ]
     result = dict(zip(names, result))
-    log.info("{}, {}, {}, {}, {}, {},{}".format(
+    log.info("{},{},{},{},{},{},{}".format(
         os.path.basename(bam),
         result['total'],
         result['duplicates'],

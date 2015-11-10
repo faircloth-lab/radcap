@@ -71,7 +71,7 @@ def main():
     # pretty print taxon status
     text = " samtools flagstat output"
     log.info(text.center(65, "-"))
-    log.info("bam, reads, duplicates, mapped, percent mapped, mate mapped, percent mate mapped")
+    log.info("bam,reads,duplicates,mapped,percent-mapped,mate-mapped,percent-mate-mapped")
     for bam in all_bams:
         samtools.flagstats(log, bam)
     # end
