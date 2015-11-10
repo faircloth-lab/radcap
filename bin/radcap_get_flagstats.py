@@ -34,12 +34,6 @@ def get_args():
         help="""The input directory containing BAM files"""
     )
     parser.add_argument(
-        "--flag",
-        action="store_true",
-        default=False,
-        help="""Help text""",
-    )
-    parser.add_argument(
         "--verbosity",
         type=str,
         choices=["INFO", "WARN", "CRITICAL"],
