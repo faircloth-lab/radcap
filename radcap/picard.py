@@ -16,6 +16,8 @@ import os
 import subprocess
 from phyluce.pth import get_user_path, get_user_param
 
+import pdb
+
 
 JAVA = get_user_param("java", "executable")
 JAVA_PARAMS = get_user_param("java", "mem")
@@ -139,6 +141,27 @@ def merge_two_bams(log, sample, sample_dir, bam, bam_se):
     os.remove(bam)
     os.remove(bam_se)
     return new_bam
+
+def merge_many_bams(log, sample, input_bams, output_dir):
+    log.info("Merging {} BAMs".format(len(input_bams)))
+    merged_bam = os.path.join(output_dir, "{}.merged.bam".format(sample))
+    bam_list = ["I={}".format(f) for f in input_bams]
+    cmd = [
+        JAVA,
+        JAVA_PARAMS,
+        "-jar",
+        os.path.join(JAR_PATH, "MergeSamFiles.jar"),
+        "SO=coordinate",
+        "AS=true",
+        "O={}".format(merged_bam),
+        "VALIDATION_STRINGENCY=LENIENT",
+    ]
+    cmd += bam_list
+    picard_merge_out_fname = os.path.join(output_dir, '{}.picard-merge-out.log'.format(sample))
+    with open(picard_merge_out_fname, 'w') as picard_out:
+        proc = subprocess.Popen(cmd, stdout=picard_out, stderr=subprocess.STDOUT)
+        proc.communicate()
+    return merged_bam
 
 
 def mark_duplicates(log, sample, sample_dir, bam, type):
