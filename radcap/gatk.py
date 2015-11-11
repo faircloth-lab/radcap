@@ -147,7 +147,7 @@ def call_indels(log, reference, bam, cores, output_dir, stand_call=30, stand_emi
     with open(gatk_call_indels, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
-    return gatk_call_indels
+    return raw_indels_vcf
 
 def variant_filtration(log, reference, bam, raw_snps_vcf, raw_indels_vcf, output_dir, qual=30.0, gq=20.0):
     log.info("Filtering SNP calls (VariantFiltration) for indels and low quality")
@@ -196,7 +196,7 @@ def variant_filtration(log, reference, bam, raw_snps_vcf, raw_indels_vcf, output
         "-o",
         filtered_variants_vcf
     ]
-    gatk_filter_variants = os.path.join(output_dir, '{}.gatk-call-indels.log'.format(sample))
+    gatk_filter_variants = os.path.join(output_dir, '{}.gatk-variant-filtration.log'.format(sample))
     with open(gatk_filter_variants, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
