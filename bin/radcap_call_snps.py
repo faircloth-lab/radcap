@@ -14,6 +14,8 @@ Created on 10 November 2015 16:12 CST (-0600)
 import os
 import argparse
 
+import vcf
+
 from radcap import gatk
 from radcap import picard
 from radcap import samtools
@@ -86,6 +88,19 @@ def main():
     raw_snps_vcf = gatk.call_snps(log, args.input_reference, realigned_bam, args.cores, args.output_dir)
     raw_indels_vcf = gatk.call_indels(log, args.input_reference, realigned_bam, args.cores, args.output_dir)
     filtered_variants_vcf = gatk.variant_filtration(log, args.input_reference, realigned_bam, raw_snps_vcf, raw_indels_vcf, args.output_dir)
+    # output a file with only passing SNPS
+    log.info("Creating a file of PASSING SNP calls")
+    passing = os.path.splitext(filtered_variants_vcf)[0] + ".PASSING.vcf"
+    with open(filtered_variants_vcf, 'r') as infile:
+        with open(passing, 'w') as outfile:
+            vcf_reader = vcf.Reader(infile)
+            vcf_writer = vcf.Writer(outfile, vcf_reader)
+            for record in vcf_reader:
+                if record.FILTER == []:
+                    vcf_writer.write_record(record)
+    # end
+    text = " Completed {} ".format(my_name)
+    log.info(text.center(65, "="))
 
 if __name__ == '__main__':
     main()
