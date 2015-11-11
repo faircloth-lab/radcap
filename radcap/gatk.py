@@ -45,7 +45,6 @@ def get_merged_intervals(log, reference, bam, cores, output_dir, min_reads=4):
         "-o",
         str(intervals)
     ]
-    pdb.set_trace()
     gatk_merged_intervals = os.path.join(output_dir, '{}.gatk-merged-intervals.log'.format(sample))
     with open(gatk_merged_intervals, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)

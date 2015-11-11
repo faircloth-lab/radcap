@@ -75,7 +75,6 @@ def main():
     # setup logging
     log, my_name = setup_logging(args)
     reference_dir, reference = os.path.split(args.input_reference)
-    pdb.set_trace()
     # create samtools index
     samtools.index(log, args.input_bam)
     samtools.faidx(log, args.input_reference)
