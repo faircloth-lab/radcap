@@ -51,3 +51,22 @@ def flagstats(log, bam):
         round(float(result['mate_mapped'])/result['mapped'] * 100, 2)
     ))
 
+
+def index(log, bam):
+    sample_dir, sample = os.path.split(bam)
+    log.info("Indexing BAM for {}".format(os.path.basename(sample)))
+    cmd = [get_user_path("samtools", "samtools"), "index", bam]
+    samtools_index_out = os.path.join(sample_dir, '{}.samtools-index.log'.format(sample))
+    with open(samtools_index_out, 'w') as samtools_out:
+        proc = subprocess.Popen(cmd, stdout=samtools_out, stderr=subprocess.STDOUT)
+        proc.communicate()
+
+
+def faidx(log, fasta):
+    sample_dir, sample = os.path.split(fasta)
+    log.info("Indexing FASTA for {}".format(os.path.basename(sample)))
+    cmd = [get_user_path("samtools", "samtools"), "faidx", fasta]
+    samtools_fasta_index_out = os.path.join(sample_dir, '{}.samtools-fasta-index.log'.format(sample))
+    with open(samtools_fasta_index_out, 'w') as samtools_out:
+        proc = subprocess.Popen(cmd, stdout=samtools_out, stderr=subprocess.STDOUT)
+        proc.communicate()
