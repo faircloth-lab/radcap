@@ -131,6 +131,10 @@ def call_indels(log, reference, bam, cores, output_dir, stand_call=30, stand_emi
         str(cores),
         "-R",
         reference,
+        "-I",
+        bam,
+        "-gt_mode",
+        "DISCOVERY",
         "-glm",
         "INDEL",
         "-stand_call_conf",
@@ -146,5 +150,56 @@ def call_indels(log, reference, bam, cores, output_dir, stand_call=30, stand_emi
         proc.communicate()
     return gatk_call_indels
 
-
+def variant_filtration(log, reference, bam, raw_snps_vcf, raw_indels_vcf, output_dir, qual=30, gq=20):
+    log.info("Filtering SNP calls (VariantFiltration)")
+    sample = os.path.basename(bam)
+    filtered_variants_vcf = os.path.join(output_dir, "{}.filtered-variants.vcf".format(sample))
+    cmd = [
+        JAVA,
+        JAVA_PARAMS,
+        "-jar",
+        os.path.join(JAR_PATH, GATK),
+        "-T",
+        "VariantFiltration",
+        "-R",
+        reference,
+        "-I",
+        "-V",
+        raw_snps_vcf,
+        "--mask",
+        raw_indels_vcf,
+        "--maskExtension",
+        "5",
+        "--maskName",
+        "InDel",
+        "--clusterWindowSize",
+        "10",
+        "--filterExpression",
+        "MQ0 >= 4 && ((MQ0 / (1.0 * DP)) > 0.1)",
+        "--filterName",
+        "Bad Validation",
+        "--filterExpression",
+        "QUAL < {}".format(qual),
+        "--filterName",
+        "LowQual",
+        "--filterExpression",
+        "QD < 2.0",
+        "--filterName",
+        "Low Variant Confidence",
+        "--genotypeFilterExpression",
+        "DP < 5.0",
+        "--genotypeFilterName",
+        "Low Read Depth Over Sample",
+        "--genotypeFilterExpression",
+        "GQ < {}".format(gq),
+        "--genotypeFilterName",
+        "Low GenotypeQuality"
+        "-o",
+        filtered_variants_vcf
+    ]
+    gatk_filter_variants = os.path.join(output_dir, '{}.gatk-call-indels.log'.format(sample))
+    with open(gatk_filter_variants, 'w') as gatk_out:
+        proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
+        proc.communicate()
+    return filtered_variants_vcf
 

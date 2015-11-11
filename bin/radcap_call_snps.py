@@ -86,6 +86,7 @@ def main():
     realigned_bam = gatk.realign_bam(log, args.input_reference, args.input_bam, intervals, args.output_dir)
     raw_snps_vcf = gatk.call_snps(log, args.input_reference, realigned_bam, args.cores, args.output_dir)
     raw_indels_vcf = gatk.call_indels(log, args.input_reference, realigned_bam, args.cores, args.output_dir)
+    filtered_variants_vcf = gatk.variant_filtration(log, args.input_reference, realigned_bam, raw_snps_vcf, raw_indels_vcf, args.output_dir)
 
 if __name__ == '__main__':
     main()
