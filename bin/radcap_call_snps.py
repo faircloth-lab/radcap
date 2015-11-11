@@ -93,11 +93,13 @@ def main():
     passing = os.path.splitext(filtered_variants_vcf)[0] + ".PASSING.vcf"
     with open(filtered_variants_vcf, 'r') as infile:
         with open(passing, 'w') as outfile:
-            vcf_reader = vcf.Reader(infile)
-            vcf_writer = vcf.Writer(outfile, vcf_reader)
-            for record in vcf_reader:
-                if record.FILTER == []:
-                    vcf_writer.write_record(record)
+            for line in infile:
+                if line.startswith("#"):
+                    outfile.write(line)
+                else:
+                    ls = line.strip().split("\t")
+                    if ls[6] == "PASS":
+                        outfile.write(line)
     # end
     text = " Completed {} ".format(my_name)
     log.info(text.center(65, "="))
