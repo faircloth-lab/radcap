@@ -17,7 +17,7 @@ from collections import Counter
 import numpy
 
 from radcap.log import setup_logging
-from radcap.helpers import FullPaths
+from radcap.helpers import FullPaths, is_dir
 
 
 def get_args():
@@ -31,6 +31,20 @@ def get_args():
         action=FullPaths,
         default=None,
         help="""The input directory containing BAM files"""
+    )
+    parser.add_argument(
+        "--verbosity",
+        type=str,
+        choices=["INFO", "WARN", "CRITICAL"],
+        default="INFO",
+        help="""The logging level to use"""
+    )
+    parser.add_argument(
+        "--log-path",
+        action=FullPaths,
+        type=is_dir,
+        default=None,
+        help="""The path to a directory to hold logs."""
     )
     return parser.parse_args()
 
