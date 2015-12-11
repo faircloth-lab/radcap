@@ -149,6 +149,7 @@ def call_indels(log, reference, bam, cores, output_dir, stand_call=30, stand_emi
         proc.communicate()
     return raw_indels_vcf
 
+
 def variant_filtration(log, reference, bam, raw_snps_vcf, raw_indels_vcf, output_dir, qual=30.0, gq=20.0):
     log.info("Filtering SNP calls (VariantFiltration) for indels and low quality")
     sample = os.path.basename(bam)
@@ -202,3 +203,31 @@ def variant_filtration(log, reference, bam, raw_snps_vcf, raw_indels_vcf, output
         proc.communicate()
     return filtered_variants_vcf
 
+
+def coverage(log, reference, bam, intervals_list, output_dir):
+    sample = os.path.basename(bam)
+    log.info("Computing coverage across {}".format(sample))
+    log.warn("These computations can take a LONG time!")
+    coverage_output = os.path.join(output_dir, "{}.coverage.tdt".format(sample))
+    # cannot use -nt option here
+    cmd = [
+        JAVA,
+        JAVA_PARAMS,
+        "-jar",
+        os.path.join(JAR_PATH, GATK),
+        "-T",
+        "DepthOfCoverage",
+        "-R",
+        reference,
+        "-I",
+        bam,
+        "-L",
+        intervals_list,
+        "-o",
+        coverage_output,
+    ]
+    gatk_coverage = os.path.join(output_dir, '{}.gatk-coverage.log'.format(sample))
+    with open(gatk_coverage, 'w') as gatk_out:
+        proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
+        proc.communicate()
+    return coverage_output

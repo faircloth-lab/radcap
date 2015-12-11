@@ -13,16 +13,13 @@ Created on 11 December 2015 12:17 CST (-0600)
 
 import os
 import argparse
-import ConfigParser
 
 from Bio import SeqIO
 
 from radcap import gatk
-from radcap import samtools
 
 from radcap.log import setup_logging
-from radcap.helpers import FullPaths, is_dir, is_file
-from radcap.raw_reads import get_input_files
+from radcap.helpers import FullPaths, is_dir, CreateDir
 
 import pdb
 
@@ -47,10 +44,11 @@ def get_args():
         help="""The input reference sequence (fasta) against which to call SNPs"""
     )
     parser.add_argument(
-        "--cores",
-        type=int,
-        default=1,
-        help="""The number of compute cores/threads to use"""
+        "--output-dir",
+        required=True,
+        action=CreateDir,
+        default=None,
+        help="""The output directory in which to store the resulting log files and SNP calls"""
     )
     parser.add_argument(
         "--verbosity",
@@ -68,8 +66,9 @@ def get_args():
     )
     return parser.parse_args()
 
-def get_interval_file(reference):
-    pdb.set_trace()
+
+def get_interval_file(log, reference):
+    log.info("Creating .intervals_list file from input radnome")
     #read_in_sequence_dict and write to top of interval_list file
     sequence_dict = os.path.splitext(reference)[0] + ".dict"
     interval_list = os.path.splitext(reference)[0] + ".interval_list"
@@ -80,16 +79,31 @@ def get_interval_file(reference):
     # get intervals of reference and write out to interval_list
     with open(interval_list, "a") as outfile:
         for seq in SeqIO.parse(reference, "fasta"):
-            pdb.set_trace()
+            # need 1-indexed position
+            start = str(seq.seq).find("N") + 1
+            end = str(seq.seq).rfind("N") + 1
+            outfile.write("{}\t{}\t{}\t+\t{}\n".format(
+                seq.id,
+                "1",
+                start,
+                seq.id
+            ))
+            outfile.write("{}\t{}\t{}\t+\t{}\n".format(
+                seq.id,
+                end,
+                len(seq),
+                seq.id
+            ))
+    return interval_list
+
 
 def main():
     args = get_args()
     # setup logging
     log, my_name = setup_logging(args)
-    get_interval_file(args.input_reference)
-
-    # samtools.index(log, bam)
-
+    interval_list = get_interval_file(log, args.input_reference)
+    # get coverage
+    gatk.coverage(log, args.input_reference, args.input_bam, interval_list, args.output_dir)
     # end
     text = " Completed {} ".format(my_name)
     log.info(text.center(65, "="))
