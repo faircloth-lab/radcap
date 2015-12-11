@@ -15,7 +15,7 @@ import os
 import subprocess
 from phyluce.pth import get_user_path, get_user_param
 
-import pdb
+#import pdb
 
 JAVA = get_user_param("java", "executable")
 JAVA_PARAMS = get_user_param("java", "mem")
@@ -24,9 +24,12 @@ GATK = get_user_param("java", "gatk")
 
 
 def get_merged_intervals(log, reference, bam, cores, output_dir, min_reads=4):
-    log.info("Calling indel intervals")
     sample = os.path.basename(bam)
     intervals = os.path.join(output_dir, "{}.intervals".format(sample))
+    gatk_merged_intervals = os.path.join(output_dir, '{}.gatk-merged-intervals.log'.format(sample))
+    log.info("Calling indel intervals")
+    log.warn("These computations can take a LONG time!")
+    log.warn("You can run `tail -f` on {} to track progress".format(gatk_merged_intervals))
     cmd = [
         JAVA,
         JAVA_PARAMS,
@@ -45,7 +48,6 @@ def get_merged_intervals(log, reference, bam, cores, output_dir, min_reads=4):
         "-o",
         str(intervals)
     ]
-    gatk_merged_intervals = os.path.join(output_dir, '{}.gatk-merged-intervals.log'.format(sample))
     with open(gatk_merged_intervals, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
@@ -53,9 +55,12 @@ def get_merged_intervals(log, reference, bam, cores, output_dir, min_reads=4):
 
 
 def realign_bam(log, reference, bam, intervals, output_dir, lod=3.0):
-    log.info("Realigning BAM file based on indel intervals")
     sample = os.path.basename(bam)
     realigned_bam = os.path.join(output_dir, "{}.realigned.bam".format(sample))
+    gatk_realign_bam = os.path.join(output_dir, '{}.gatk-realign-bam.log'.format(sample))
+    log.info("Realigning BAM file based on indel intervals")
+    log.warn("These computations can take a LONG time!")
+    log.warn("You can run `tail -f` on {} to track progress".format(gatk_realign_bam))
     # wont run in parallel
     cmd = [
         JAVA,
@@ -75,7 +80,6 @@ def realign_bam(log, reference, bam, intervals, output_dir, lod=3.0):
         "-o",
         realigned_bam
     ]
-    gatk_realign_bam = os.path.join(output_dir, '{}.gatk-realign-bam.log'.format(sample))
     with open(gatk_realign_bam, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
@@ -83,9 +87,12 @@ def realign_bam(log, reference, bam, intervals, output_dir, lod=3.0):
 
 
 def call_snps(log, reference, bam, cores, output_dir, stand_call=30, stand_emit=10):
-    log.info("Calling SNPs in the realigned BAM")
     sample = os.path.basename(bam)
     raw_snps_vcf = os.path.join(output_dir, "{}.raw-snps.vcf".format(sample))
+    gatk_call_snps = os.path.join(output_dir, '{}.gatk-call-snps.log'.format(sample))
+    log.info("Calling SNPs in the realigned BAM")
+    log.warn("These computations can take a LONG time!")
+    log.warn("You can run `tail -f` on {} to track progress".format(gatk_call_snps))
     cmd = [
         JAVA,
         JAVA_PARAMS,
@@ -108,7 +115,6 @@ def call_snps(log, reference, bam, cores, output_dir, stand_call=30, stand_emit=
         "-o",
         raw_snps_vcf
     ]
-    gatk_call_snps = os.path.join(output_dir, '{}.gatk-call-snps.log'.format(sample))
     with open(gatk_call_snps, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
@@ -116,9 +122,12 @@ def call_snps(log, reference, bam, cores, output_dir, stand_call=30, stand_emit=
 
 
 def call_indels(log, reference, bam, cores, output_dir, stand_call=30, stand_emit=10):
-    log.info("Calling Indels in the realigned BAM")
     sample = os.path.basename(bam)
     raw_indels_vcf = os.path.join(output_dir, "{}.raw-indels.vcf".format(sample))
+    gatk_call_indels = os.path.join(output_dir, '{}.gatk-call-indels.log'.format(sample))
+    log.info("Calling Indels in the realigned BAM")
+    log.warn("These computations can take a LONG time!")
+    log.warn("You can run `tail -f` on {} to track progress".format(gatk_call_indels))
     cmd = [
         JAVA,
         JAVA_PARAMS,
@@ -143,7 +152,6 @@ def call_indels(log, reference, bam, cores, output_dir, stand_call=30, stand_emi
         "-o",
         raw_indels_vcf
     ]
-    gatk_call_indels = os.path.join(output_dir, '{}.gatk-call-indels.log'.format(sample))
     with open(gatk_call_indels, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
@@ -206,10 +214,12 @@ def variant_filtration(log, reference, bam, raw_snps_vcf, raw_indels_vcf, output
 
 def coverage(log, reference, bam, intervals_list, output_dir):
     sample = os.path.basename(bam)
+    gatk_coverage = os.path.join(output_dir, '{}.gatk-coverage.log'.format(sample))
     log.info("Computing coverage across {}".format(sample))
     log.warn("These computations can take a LONG time!")
+    log.warn("You can run `tail -f` on {} to track progress".format(gatk_coverage))
     coverage_output = os.path.join(output_dir, "{}.coverage.tdt".format(sample))
-    # cannot use -nt option here
+    # wont run in parallel
     cmd = [
         JAVA,
         JAVA_PARAMS,
@@ -226,7 +236,6 @@ def coverage(log, reference, bam, intervals_list, output_dir):
         "-o",
         coverage_output,
     ]
-    gatk_coverage = os.path.join(output_dir, '{}.gatk-coverage.log'.format(sample))
     with open(gatk_coverage, 'w') as gatk_out:
         proc = subprocess.Popen(cmd, stdout=gatk_out, stderr=subprocess.STDOUT)
         proc.communicate()
