@@ -18,6 +18,7 @@ import ConfigParser
 from Bio import SeqIO
 
 from radcap import gatk
+from radcap import samtools
 
 from radcap.log import setup_logging
 from radcap.helpers import FullPaths, is_dir, is_file
@@ -68,6 +69,7 @@ def get_args():
     return parser.parse_args()
 
 def get_interval_file(reference):
+    pdb.set_trace()
     #read_in_sequence_dict and write to top of interval_list file
     sequence_dict = os.path.splitext(reference)[0] + ".dict"
     interval_list = os.path.splitext(reference)[0] + ".interval_list"
@@ -77,7 +79,7 @@ def get_interval_file(reference):
                 outfile.write(line)
     # get intervals of reference and write out to interval_list
     with open(interval_list, "a") as outfile:
-        for seq in SeqIO.read(reference, "fasta"):
+        for seq in SeqIO.parse(reference, "fasta"):
             pdb.set_trace()
 
 def main():
@@ -85,6 +87,8 @@ def main():
     # setup logging
     log, my_name = setup_logging(args)
     get_interval_file(args.input_reference)
+
+    # samtools.index(log, bam)
 
     # end
     text = " Completed {} ".format(my_name)
