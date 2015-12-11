@@ -60,6 +60,7 @@ def main():
     args = get_args()
     # setup logging
     log, my_name = setup_logging(args)
+    log.info("{}".format('-' * 65))
     cnt_loci = Counter()
     cnt_status = Counter()
     with open(args.input_vcf, 'r') as infile:
@@ -76,11 +77,11 @@ def main():
     ordered_status.sort()
     for status in ordered_status:
         log.info("{0: <6}\tSNPs with {1}".format(cnt_status[status], status))
-    log.info("{}".format('-' * 66))
-    log.info("Mean SNPs per locus\t = {}".format(numpy.mean(snps_per_locus)))
-    log.info("95 CI SNPs per locus\t = {}".format(1.96 * (numpy.std(snps_per_locus, ddof=1) / numpy.sqrt(len(snps_per_locus)))))
-    log.info("Max SNPs per locus\t = {}".format(numpy.min(snps_per_locus)))
-    log.info("Min SNPs per locus\t = {}".format(numpy.max(snps_per_locus)))
+    log.info("{}".format('-' * 65))
+    log.info("Mean PASS SNPs per locus\t = {}".format(numpy.mean(snps_per_locus)))
+    log.info("95 CI PASS SNPs per locus\t = {}".format(1.96 * (numpy.std(snps_per_locus, ddof=1) / numpy.sqrt(len(snps_per_locus)))))
+    log.info("Max PASS SNPs per locus\t = {}".format(numpy.min(snps_per_locus)))
+    log.info("Min PASS SNPs per locus\t = {}".format(numpy.max(snps_per_locus)))
     if args.output_file is not None:
         with open(args.output_file, "w") as outfile:
             outfile.write("locus,count\n")
