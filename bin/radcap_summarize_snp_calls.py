@@ -81,7 +81,7 @@ def main():
     log.info("Max SNPs per locus\t = {}".format(numpy.min(snps_per_locus)))
     log.info("Min SNPs per locus\t = {}".format(numpy.max(snps_per_locus)))
     if args.output is not None:
-        with open(args.output, "w") as outfile:
+        with open(args.output_file, "w") as outfile:
             outfile.write("locus,count\n")
             for locus, cnt in cnt_loci.iteritems():
                 outfile.write("{},{}\n".format(locus, cnt))
