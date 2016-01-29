@@ -52,13 +52,20 @@ def get_args():
         default=None,
         help="""The path to a directory to hold logs."""
     )
+    parser.add_argument(
+        "--follow-links",
+        action="store_true",
+        default=False,
+        help="""Follow symlinks""",
+    )
     return parser.parse_args()
+
 
 def main():
     args = get_args()
     # setup logging
     log, my_name = setup_logging(args)
-    all_bams = get_all_bams(args.input_dir)
+    all_bams = get_all_bams(args.input_dir, args.follow_links)
     sample = os.path.basename(args.input_dir)
     picard.merge_many_bams(log, sample, all_bams, args.output_dir)
     # end
