@@ -89,7 +89,7 @@ def which(program):
                 return exe_file
     return None
 
-def get_all_bams(input_dir, links):
+def get_all_bams(input_dir, links=False):
     all_bams = []
     for root, dirs, files in os.walk(input_dir, followlinks=links):
         bams = [f for f in files if ".bam" in f]
