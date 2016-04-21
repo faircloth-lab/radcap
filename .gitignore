@@ -4,3 +4,5 @@
 log
 *.conf
 !config/*
+docs/build
+build
