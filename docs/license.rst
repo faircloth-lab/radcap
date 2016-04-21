@@ -15,7 +15,7 @@ work or use this work for commercial purposes, under the condition that you must
 attribute the work to the author(s).
 
 If you use this documentation or the radcap_ software for your own research,
-please cite both the software and (Glenn et al. 2016).  See the Citing
+please cite both the software and `Hoffberg et al. 2016`_.  See the Citing
 section for more detail.
 
 Software

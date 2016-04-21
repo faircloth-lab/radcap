@@ -16,7 +16,7 @@ Release v\ |version|. (:ref:`Changelog`)
 :Copyright: This documentation is available under a Creative Commons (`CC-BY`_) license.
 
 radcap_ is a software package that was developed for analyzing data collected
-from RADseq loci using the RADcap approach (see `Glenn et al. 2016`_ and
+from RADseq loci using the RADcap approach (see `Hoffberg et al. 2016`_ and
 :ref:`References` for additional information).
 
 Contributions

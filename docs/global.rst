@@ -23,4 +23,4 @@
 .. _tmux: http://tmux.sourceforge.net/
 .. _unittests: http://en.wikipedia.org/wiki/Unit_testing
 .. _virtualenv: http://www.virtualenv.org/
-.. _`Glenn et al. 2016`: http://dx.doi.org/10.1101/044651
+.. _`Hoffberg et al. 2016`: http://dx.doi.org/10.1101/044651
