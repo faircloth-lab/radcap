@@ -1,0 +1,26 @@
+.. _anaconda: http://docs.continuum.io/anaconda/install.html
+.. _bcl2fastq: https://support.illumina.com/downloads/bcl2fastq_conversion_software_184.ilmn
+.. _Casava: http://support.illumina.com/sequencing/sequencing_software/casava.ilmn
+.. _CC-BY: http://creativecommons.org/licenses/by/4.0/
+.. _CLI: http://en.wikipedia.org/wiki/Command-line_interface
+.. _conda: http://docs.continuum.io/conda/
+.. _FastQC: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+.. _fastx-toolkit: http://hannonlab.cshl.edu/fastx_toolkit/
+.. _github: https://github.com/faircloth-lab/radcap
+.. _gzip: http://www.gzip.org/
+.. _HiSeq: http://www.illumina.com/systems/hiseq_2500_1500.ilmn
+.. _IDTDNA: http://www.idtdna.com/site
+.. _Illumina: http://www.illumina.com/
+.. _miniconda: http://repo.continuum.io/miniconda/
+.. _MYcroarray: http://mycroarray.com/
+.. _MiSeq: http://www.illumina.com/systems/miseq.ilmn
+.. _multiprocessing: http://docs.python.org/2/library/multiprocessing.html
+.. _Python: http://www.python.org
+.. _RAD-seq: http://en.wikipedia.org/wiki/Restriction_site_associated_DNA_markers
+.. _radcap: https://github.com/faircloth-lab/radcap
+.. _screen: http://www.gnu.org/software/screen/
+.. _stacks: http://catchenlab.life.illinois.edu/stacks/
+.. _tmux: http://tmux.sourceforge.net/
+.. _unittests: http://en.wikipedia.org/wiki/Unit_testing
+.. _virtualenv: http://www.virtualenv.org/
+.. _`Glenn et al. 2016`: http://dx.doi.org/10.1101/044651
