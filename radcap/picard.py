@@ -14,9 +14,9 @@ Created on 26 June 2014 17:13 PDT (-0700)
 
 import os
 import subprocess
-from phyluce.pth import get_user_path, get_user_param
+from radcap.pth import get_user_path, get_user_param
 
-import pdb
+#import pdb
 
 
 JAVA = get_user_param("java", "executable")
